@@ -1,5 +1,6 @@
-library(ggplot2)
-library(dplyr)
+library("ggplot2")
+library("dplyr")
+library("magrittr")
 
 ##################
 # Data Processing
@@ -7,7 +8,7 @@ library(dplyr)
 man.data<-original
 # Read in Data
 #man.data<-tbl_df(read.table(file="plink.assoc.txt",header=TRUE))
-man.data<-tbl_df(read.csv(file="data.csv"))
+man.data<-read.csv(file="data.csv") %>% tbl_df()
 man.data<-man.data %.% na.omit()
 man.data<-man.data[sample(1:nrow(man.data),40000,replace=FALSE),]
 man.data$CHR<-as.factor(man.data$CHR)
@@ -78,3 +79,4 @@ m.plot
 ##################
 # Mito Manhattan 
 ##################
+
