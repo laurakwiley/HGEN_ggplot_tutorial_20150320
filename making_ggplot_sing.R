@@ -5,20 +5,21 @@ library("magrittr")
 ##################
 # Data Processing
 ##################
-man.data<-original
+
 # Read in Data
 #man.data<-tbl_df(read.table(file="plink.assoc.txt",header=TRUE))
-man.data<-read.csv(file="data.csv") %>% tbl_df()
-man.data<-man.data %.% na.omit()
-man.data<-man.data[sample(1:nrow(man.data),40000,replace=FALSE),]
-man.data$CHR<-as.factor(man.data$CHR)
+man.data <- read.csv(file="HGEN_ggplot_tutorial_20150320/data.csv") %>% tbl_df()
+man.data %<>% 
+  na.omit() %>% 
+  sample_n(40000) %>% 
+  mutate(CHR=as.factor(CHR))
 
 
 # Sort by CHR,BP
-man.data<-arrange(man.data, CHR, BP)
+man.data %<>% arrange(CHR, BP)
   
 # Add in index position for plot
-man.data$position<-c(1:nrow(man.data))
+man.data %>% mutate(position=1:length(SNP))
 
 ##################
 # Manhattan Plot
@@ -42,8 +43,8 @@ m.plot
 
 # Make x-axis labels by chromosome
 # Need tick position and label name
-axis_labels<-man.data %.% group_by(CHR) %.% summarize(mean(position))
-names(axis_labels)<-c("CHR","position")
+axis_labels <- man.data %.% group_by(CHR) %.% summarize(mean(position))
+names(axis_labels) <- c("CHR","position")
 
 m.plot<-m.plot + scale_x_continuous(breaks = axis_labels$position, labels = axis_labels$CHR)
 m.plot
